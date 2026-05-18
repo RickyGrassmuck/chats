@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<!--
+  Chat template
+  =============
+  1. Copy this file to chats/YYYY-MM-DD-slug.html
+  2. Fill in the two meta tags (chat-title, chat-start-date) — required for index generation
+  3. Replace the <title>, header, and turn content with your conversation
+  4. Optionally include or remove the <details class="thinking"> block(s)
+  5. Commit + push. CI rebuilds the index and deploys to Pages.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- REQUIRED: edit these two -->
+  <meta name="chat-title" content="Chat Title Here">
+  <meta name="chat-start-date" content="YYYY-MM-DD">
+
+  <title>Chat Title Here</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f4ede0;
+      --paper-deep: #ece2cc;
+      --ink: #1c1814;
+      --ink-soft: #5c5147;
+      --ink-faded: #8a7c6d;
+      --rule: #c9b896;
+      --accent: #8b3a1a;
+      --thought-bg: #ebdfc4;
+      --thought-rule: #a8895a;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body { background: var(--paper); color: var(--ink); }
+
+    body {
+      font-family: 'Newsreader', Georgia, serif;
+      font-size: 19px;
+      line-height: 1.65;
+      padding: 5rem 1.5rem 6rem;
+      min-height: 100vh;
+      background-image:
+        radial-gradient(ellipse at top, rgba(139, 58, 26, 0.04), transparent 60%),
+        radial-gradient(ellipse at bottom, rgba(28, 24, 20, 0.03), transparent 60%);
+    }
+
+    .page { max-width: 660px; margin: 0 auto; }
+
+    header {
+      text-align: center;
+      margin-bottom: 4.5rem;
+      padding-bottom: 2.5rem;
+      position: relative;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    header .eyebrow {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 0.78rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--ink-faded);
+      margin-bottom: 1rem;
+    }
+
+    header h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 350;
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-variation-settings: "opsz" 144, "SOFT" 60;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+
+    header .back {
+      display: inline-block;
+      margin-top: 1.5rem;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 0.85rem;
+      color: var(--ink-faded);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      transition: color 0.15s ease;
+    }
+
+    header .back:hover { color: var(--accent); }
+
+    .turn { margin-bottom: 2.5rem; }
+
+    .speaker {
+      font-family: 'Fraunces', serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      display: inline-block;
+    }
+
+    .speaker::before { content: "§ "; opacity: 0.6; }
+
+    .content p { margin-bottom: 1rem; }
+    .content p:last-child { margin-bottom: 0; }
+
+    .content ul {
+      margin: 1rem 0;
+      padding-left: 1.25rem;
+      list-style: none;
+    }
+
+    .content li {
+      margin-bottom: 0.6rem;
+      position: relative;
+      padding-left: 1rem;
+    }
+
+    .content li::before {
+      content: "—";
+      position: absolute;
+      left: -0.25rem;
+      color: var(--ink-faded);
+    }
+
+    .content strong { font-weight: 600; color: var(--ink); }
+
+    details.thinking {
+      margin: 2.25rem 0;
+      background: var(--thought-bg);
+      border-left: 2px solid var(--thought-rule);
+      padding: 1.1rem 1.6rem;
+      transition: padding 0.2s ease;
+      position: relative;
+    }
+
+    details.thinking::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, transparent 50%, rgba(0,0,0,0.06) 50%);
+    }
+
+    details.thinking summary {
+      cursor: pointer;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 0.9rem;
+      letter-spacing: 0.02em;
+      color: var(--ink-soft);
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      user-select: none;
+      transition: color 0.15s ease;
+    }
+
+    details.thinking summary:hover { color: var(--accent); }
+    details.thinking summary::-webkit-details-marker { display: none; }
+
+    details.thinking summary::before {
+      content: "▸";
+      display: inline-block;
+      transition: transform 0.2s ease;
+      font-size: 0.7rem;
+      color: var(--thought-rule);
+    }
+
+    details.thinking[open] summary::before { transform: rotate(90deg); }
+
+    details.thinking[open] summary {
+      margin-bottom: 1.1rem;
+      padding-bottom: 0.85rem;
+      border-bottom: 1px dashed var(--thought-rule);
+    }
+
+    .thought-body { font-size: 0.95rem; line-height: 1.62; color: var(--ink); }
+    .thought-body p { margin-bottom: 0.85rem; }
+    .thought-body p:last-child { margin-bottom: 0; }
+
+    .thought-body ul {
+      list-style: none;
+      margin: 0.5rem 0 0.85rem 0.5rem;
+      padding-left: 1rem;
+    }
+
+    .thought-body ul li {
+      position: relative;
+      padding-left: 1rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .thought-body ul li::before {
+      content: "·";
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+      color: var(--thought-rule);
+    }
+
+    footer {
+      margin-top: 5rem;
+      text-align: center;
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      font-size: 0.78rem;
+      letter-spacing: 0.15em;
+      color: var(--ink-faded);
+    }
+
+    footer::before {
+      content: "❦";
+      display: block;
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--thought-rule);
+      font-style: normal;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <div class="eyebrow">A conversation</div>
+      <h1>Chat Title Here</h1>
+      <a class="back" href="../index.html">← All chats</a>
+    </header>
+
+    <!-- Turn with optional thinking section -->
+    <article class="turn">
+      <div class="speaker">Prompt</div>
+      <div class="content">
+        <p>User prompt goes here.</p>
+      </div>
+    </article>
+
+    <!-- OPTIONAL: thinking section between prompt and response. Delete the entire <details> block if not needed. -->
+    <details class="thinking">
+      <summary>Show thought process</summary>
+      <div class="thought-body">
+        <p>Thought process content goes here.</p>
+      </div>
+    </details>
+
+    <article class="turn">
+      <div class="speaker">Response</div>
+      <div class="content">
+        <p>Assistant response goes here.</p>
+      </div>
+    </article>
+
+    <!-- Additional turns follow the same pattern. Duplicate the prompt + response articles as needed. -->
+
+    <footer>End of exchange</footer>
+  </div>
+</body>
+</html>
